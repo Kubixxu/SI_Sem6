@@ -137,6 +137,79 @@ def binary_solver_fc(bin_matrix, elem_cords, num_of_propag):
         """
         bin_matrix[elem_cords[0]][elem_cords[1]] = -1
 
+def binary_solver_fc_ran_pick(bin_matrix, free_spaces, num_of_propag):
+    if len(free_spaces) == 0:
+        list_of_solutions_bin.append(deepcopy(bin_matrix))
+    else:
+        elem_cords = deepcopy(free_spaces[randint(0, len(free_spaces) - 1)])
+        free_spaces.remove(elem_cords)
+        for val in range(0,2):
+            bin_matrix[elem_cords[0]][elem_cords[1]] = val
+            if check_if_constr_brk(bin_matrix, elem_cords):
+                bin_matrix[elem_cords[0]][elem_cords[1]] = -1
+                continue
+            bin_matrix[elem_cords[0]][elem_cords[1]] = -1
+            bin_matrix_virt = deepcopy(bin_matrix)
+            bin_matrix_virt[elem_cords[0]][elem_cords[1]] = val
+            if check_if_constr_brk(bin_matrix_virt, elem_cords):
+                continue
+            current_cords = get_next_elem(elem_cords, bin_matrix_virt.shape)
+            value_rejected = False
+            for i in range(num_of_propag):
+                if current_cords is None:
+                    break
+                has_non_empty_dom = False
+                for next_elem_val in range(0,2):
+                    bin_matrix_virt[current_cords[0]][current_cords[1]] = next_elem_val
+                    if not check_if_constr_brk(bin_matrix_virt, current_cords):
+                        has_non_empty_dom = True
+                        break
+                bin_matrix_virt[current_cords[0]][current_cords[1]] = -1
+                if not has_non_empty_dom:
+                    value_rejected = True
+                    break
+                current_cords = get_next_elem(current_cords, bin_matrix_virt.shape)
+            if not value_rejected:
+                bin_matrix[elem_cords[0]][elem_cords[1]] = val
+                binary_solver_fc_ran_pick(bin_matrix, free_spaces, num_of_propag)
+                
+        """
+        list_of_vals = [0,1]
+        while len(list_of_vals) != 0:
+            val_idx = randint(0, len(list_of_vals) - 1)
+            val = list_of_vals[val_idx]
+            bin_matrix[elem_cords[0]][elem_cords[1]] = val
+            if check_if_constr_brk(bin_matrix, elem_cords):
+                bin_matrix[elem_cords[0]][elem_cords[1]] = -1
+                continue
+            bin_matrix[elem_cords[0]][elem_cords[1]] = -1
+            bin_matrix_virt = deepcopy(bin_matrix)
+            bin_matrix_virt[elem_cords[0]][elem_cords[1]] = val
+            if check_if_constr_brk(bin_matrix_virt, elem_cords):
+                continue
+            current_cords = get_next_elem(elem_cords, bin_matrix_virt.shape)
+            value_rejected = False
+            for i in range(num_of_propag):
+                if current_cords is None:
+                    break
+                has_non_empty_dom = False
+                for next_elem_val in range(0,2):
+                    bin_matrix_virt[current_cords[0]][current_cords[1]] = next_elem_val
+                    if not check_if_constr_brk(bin_matrix_virt, current_cords):
+                        has_non_empty_dom = True
+                        break
+                bin_matrix_virt[current_cords[0]][current_cords[1]] = -1
+                if not has_non_empty_dom:
+                    value_rejected = True
+                    break
+                current_cords = get_next_elem(current_cords, bin_matrix_virt.shape)
+            if not value_rejected:
+                bin_matrix[elem_cords[0]][elem_cords[1]] = val
+                binary_solver_fc(bin_matrix, get_next_elem(elem_cords, bin_matrix.shape), num_of_propag)
+        """
+        free_spaces.append(elem_cords)
+        bin_matrix[elem_cords[0]][elem_cords[1]] = -1
+
 def get_next_elem(cords, mtrx_shape):
     if mtrx_shape[0] - 1 == cords[0] and mtrx_shape[1] - 1 == cords[1]:
         return None

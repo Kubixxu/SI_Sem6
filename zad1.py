@@ -1,5 +1,5 @@
 import numpy as np
-from binary import binary_solver_bt, binary_solver_fc, list_of_solutions_bin, binary_solver_bt_ran_pick
+from binary import binary_solver_bt, binary_solver_fc, list_of_solutions_bin, binary_solver_bt_ran_pick, binary_solver_fc_ran_pick
 from futoshiki import futoshiki_solver_bt, list_of_solutions_ft
 from utils import print_fut_matrix, free_spaces
 import mat_operator
@@ -34,6 +34,7 @@ def binary_6_6_fc():
                 bin_matrix[i][j] = 0
     #print(bin_matrix)
     binary_solver_fc(bin_matrix, (0,0), 3)
+    #binary_solver_fc_ran_pick(bin_matrix, free_spaces(bin_matrix), 4)
     print(list_of_solutions_bin)
 
     
@@ -267,9 +268,9 @@ def futoshiki_6_6():
 if __name__ == "__main__":
     #binary_8_8_bt()
     #get_next_elem_test()
-    #binary_6_6_fc()
+    binary_6_6_fc()
     #binary_8_8_fc()
-    binary_10_10_bt()
+    #binary_10_10_bt()
     #binary_10_10_fc()
     #futoshiki_4_4()
     #futoshiki_5_5()
