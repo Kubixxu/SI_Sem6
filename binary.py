@@ -14,6 +14,7 @@ def binary_solver_bt(bin_matrix, elem_cords):
             binary_solver_bt(bin_matrix, (elem_cords[0] + 1, elem_cords[1]))
     
     else:
+        
         for val in range(0,2):
             bin_matrix[elem_cords[0]][elem_cords[1]] = val
             if not check_if_constr_brk(bin_matrix, elem_cords):
@@ -36,6 +37,7 @@ def binary_solver_bt(bin_matrix, elem_cords):
                     binary_solver_bt(bin_matrix, (elem_cords[0] + 1, elem_cords[1]))
             list_of_vals.pop(val_idx)
         """
+
         bin_matrix[elem_cords[0]][elem_cords[1]] = -1
 
 def binary_solver_bt_ran_pick(bin_matrix, free_spaces):
@@ -46,6 +48,7 @@ def binary_solver_bt_ran_pick(bin_matrix, free_spaces):
         elem_cords = deepcopy(free_spaces[randint(0, len(free_spaces) - 1)])
         free_spaces.remove(elem_cords)
         #print(free_spaces)
+        """
         for val in range(0,2):
             bin_matrix[elem_cords[0]][elem_cords[1]] = val
             if not check_if_constr_brk(bin_matrix, elem_cords):
@@ -59,9 +62,9 @@ def binary_solver_bt_ran_pick(bin_matrix, free_spaces):
             bin_matrix[elem_cords[0]][elem_cords[1]] = val
             if not check_if_constr_brk(bin_matrix, elem_cords):
                 #print(bin_matrix)
-                binary_solver_bt_ran_pick(bin_matrix)
+                binary_solver_bt_ran_pick(bin_matrix, free_spaces)
             list_of_vals.pop(val_idx)
-        """
+
         free_spaces.append(elem_cords)
         bin_matrix[elem_cords[0]][elem_cords[1]] = -1
 
@@ -72,6 +75,7 @@ def binary_solver_fc(bin_matrix, elem_cords, num_of_propag):
     elif bin_matrix[elem_cords[0]][elem_cords[1]] != -1:
             binary_solver_fc(bin_matrix, get_next_elem(elem_cords, bin_matrix.shape), num_of_propag)
     else:
+        """
         for val in range(0,2):
             bin_matrix[elem_cords[0]][elem_cords[1]] = val
             if check_if_constr_brk(bin_matrix, elem_cords):
@@ -106,6 +110,7 @@ def binary_solver_fc(bin_matrix, elem_cords, num_of_propag):
         while len(list_of_vals) != 0:
             val_idx = randint(0, len(list_of_vals) - 1)
             val = list_of_vals[val_idx]
+            list_of_vals.pop(val_idx)
             bin_matrix[elem_cords[0]][elem_cords[1]] = val
             if check_if_constr_brk(bin_matrix, elem_cords):
                 bin_matrix[elem_cords[0]][elem_cords[1]] = -1
@@ -134,7 +139,9 @@ def binary_solver_fc(bin_matrix, elem_cords, num_of_propag):
             if not value_rejected:
                 bin_matrix[elem_cords[0]][elem_cords[1]] = val
                 binary_solver_fc(bin_matrix, get_next_elem(elem_cords, bin_matrix.shape), num_of_propag)
-        """
+            
+        
+        
         bin_matrix[elem_cords[0]][elem_cords[1]] = -1
 
 def binary_solver_fc_ran_pick(bin_matrix, free_spaces, num_of_propag):
@@ -143,6 +150,7 @@ def binary_solver_fc_ran_pick(bin_matrix, free_spaces, num_of_propag):
     else:
         elem_cords = deepcopy(free_spaces[randint(0, len(free_spaces) - 1)])
         free_spaces.remove(elem_cords)
+        """
         for val in range(0,2):
             bin_matrix[elem_cords[0]][elem_cords[1]] = val
             if check_if_constr_brk(bin_matrix, elem_cords):
@@ -178,6 +186,7 @@ def binary_solver_fc_ran_pick(bin_matrix, free_spaces, num_of_propag):
         while len(list_of_vals) != 0:
             val_idx = randint(0, len(list_of_vals) - 1)
             val = list_of_vals[val_idx]
+            list_of_vals.pop(val_idx)
             bin_matrix[elem_cords[0]][elem_cords[1]] = val
             if check_if_constr_brk(bin_matrix, elem_cords):
                 bin_matrix[elem_cords[0]][elem_cords[1]] = -1
@@ -205,8 +214,8 @@ def binary_solver_fc_ran_pick(bin_matrix, free_spaces, num_of_propag):
                 current_cords = get_next_elem(current_cords, bin_matrix_virt.shape)
             if not value_rejected:
                 bin_matrix[elem_cords[0]][elem_cords[1]] = val
-                binary_solver_fc(bin_matrix, get_next_elem(elem_cords, bin_matrix.shape), num_of_propag)
-        """
+                binary_solver_fc_ran_pick(bin_matrix, free_spaces, num_of_propag)
+        
         free_spaces.append(elem_cords)
         bin_matrix[elem_cords[0]][elem_cords[1]] = -1
 

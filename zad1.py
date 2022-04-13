@@ -17,8 +17,8 @@ def binary_6_6_bt():
                 bin_matrix[i][j] = 0
     #print(bin_matrix)
     #print(free_spaces(bin_matrix))
-    binary_solver_bt(bin_matrix, (0,0))
-    #binary_solver_bt_ran_pick(bin_matrix, free_spaces(bin_matrix))
+    #binary_solver_bt(bin_matrix, (0,0))
+    binary_solver_bt_ran_pick(bin_matrix, free_spaces(bin_matrix))
     print(list_of_solutions_bin)
 
 def binary_6_6_fc():
@@ -49,8 +49,8 @@ def binary_8_8_bt():
             elif lines[i][j] == '0':
                 bin_matrix[i][j] = 0
     #print(bin_matrix)
-    binary_solver_bt(bin_matrix, (0,0))
-    #binary_solver_bt_ran_pick(bin_matrix, free_spaces(bin_matrix))
+    #binary_solver_bt(bin_matrix, (0,0))
+    binary_solver_bt_ran_pick(bin_matrix, free_spaces(bin_matrix))
     print(list_of_solutions_bin)
 
 def binary_8_8_fc():
@@ -64,7 +64,8 @@ def binary_8_8_fc():
             elif lines[i][j] == '0':
                 bin_matrix[i][j] = 0
     #print(bin_matrix)
-    binary_solver_fc(bin_matrix, (0,0), 6)
+    #binary_solver_fc(bin_matrix, (0,0), 6)
+    binary_solver_fc_ran_pick(bin_matrix, free_spaces(bin_matrix), 4)
     print(list_of_solutions_bin)
 
 def binary_10_10_bt():
@@ -78,8 +79,8 @@ def binary_10_10_bt():
             elif lines[i][j] == '0':
                 bin_matrix[i][j] = 0
     #print(bin_matrix)
-    binary_solver_bt(bin_matrix, (0,0))
-    #binary_solver_bt_ran_pick(bin_matrix, free_spaces(bin_matrix))
+    #binary_solver_bt(bin_matrix, (0,0))
+    binary_solver_bt_ran_pick(bin_matrix, free_spaces(bin_matrix))
     print(list_of_solutions_bin)
     #comparison = list_of_solutions[0] == list_of_solutions[1]
     #equal_arrays = comparison.all()
@@ -96,7 +97,8 @@ def binary_10_10_fc():
             elif lines[i][j] == '0':
                 bin_matrix[i][j] = 0
     #print(bin_matrix)
-    binary_solver_bt(bin_matrix, (0,0))
+    #binary_solver_fc(bin_matrix, (0,0), 4)
+    binary_solver_fc_ran_pick(bin_matrix, free_spaces(bin_matrix), 4)
     print(list_of_solutions_bin)
     #comparison = list_of_solutions[0] == list_of_solutions[1]
     #equal_arrays = comparison.all()
@@ -266,12 +268,12 @@ def futoshiki_6_6():
     print(len(list_of_solutions_ft))
 
 if __name__ == "__main__":
-    #binary_8_8_bt()
+    #binary_10_10_bt()
     #get_next_elem_test()
-    binary_6_6_fc()
+    #binary_6_6_fc()
     #binary_8_8_fc()
     #binary_10_10_bt()
-    #binary_10_10_fc()
+    binary_10_10_fc()
     #futoshiki_4_4()
     #futoshiki_5_5()
     #futoshiki_6_6()
