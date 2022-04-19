@@ -1,6 +1,17 @@
 import numpy as np
 from mat_operator import MatSign
 
+class SimpleCounter():
+
+    def __init__(self):
+        self.__number = 0
+
+    def increment_by_one(self):
+        self.__number += 1
+    
+    def get_counter_num(self):
+        return self.__number
+        
 def print_fut_matrix(fut_matrix, constr_dict):
     print_arr = np.full((fut_matrix.shape[0] * 2, fut_matrix.shape[1] * 2), ' ')
     for row_idx in range(0, fut_matrix.shape[1] * 2):
@@ -32,10 +43,10 @@ def print_fut_matrix(fut_matrix, constr_dict):
     print(print_arr)
 
 
-def free_spaces(bin_matrix):
+def free_spaces(matrix):
     free_cords_list = []
-    for i in range(0, bin_matrix.shape[0]):
-        for j in range(0, bin_matrix.shape[1]):
-            if bin_matrix[i][j] == -1:
+    for i in range(0, matrix.shape[0]):
+        for j in range(0, matrix.shape[1]):
+            if matrix[i][j] == -1:
                 free_cords_list.append((i,j))
     return free_cords_list
