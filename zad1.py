@@ -72,7 +72,7 @@ def binary_8_8_fc():
                 bin_matrix[i][j] = 0
     #print(bin_matrix)
     counter = SimpleCounter()
-    binary_solver_fc(bin_matrix, (0,0), 34, counter)
+    binary_solver_fc(bin_matrix, (0,0), 50, counter)
     #binary_solver_fc_ran_pick(bin_matrix, free_spaces(bin_matrix), 4, counter)
     print(list_of_solutions_bin)
     print(counter.get_counter_num())
@@ -109,8 +109,8 @@ def binary_10_10_fc():
                 bin_matrix[i][j] = 0
     #print(bin_matrix)
     counter = SimpleCounter()
-    #binary_solver_fc(bin_matrix, (0,0), 4, counter)
-    binary_solver_fc_ran_pick(bin_matrix, free_spaces(bin_matrix), 4, counter)
+    binary_solver_fc(bin_matrix, (0,0), 90, counter)
+    #binary_solver_fc_ran_pick(bin_matrix, free_spaces(bin_matrix), 4, counter)
     print(list_of_solutions_bin)
     print(counter.get_counter_num())
     #comparison = list_of_solutions[0] == list_of_solutions[1]
@@ -226,8 +226,8 @@ def futoshiki_4_4_fc():
     #print(fut_matrix)
     #print(constr_dict)
     counter = SimpleCounter()
-    #futoshiki_solver_fc(fut_matrix, (0,0), constr_dict, 4, counter)
-    futoshiki_solver_fc_ran_pick(fut_matrix, free_spaces(fut_matrix), constr_dict, 4, counter)
+    futoshiki_solver_fc(fut_matrix, (0,0), constr_dict, 15, counter)
+    #futoshiki_solver_fc_ran_pick(fut_matrix, free_spaces(fut_matrix), constr_dict, 4, counter)
     print_fut_matrix(list_of_solutions_ft[0], constr_dict)
     print(counter.get_counter_num())
 
@@ -340,8 +340,8 @@ def futoshiki_5_5_fc():
     #print(fut_matrix)
     #print(constr_dict)
     counter = SimpleCounter()
-    #futoshiki_solver_fc(fut_matrix, (0,0), constr_dict, 4, counter)
-    futoshiki_solver_fc_ran_pick(fut_matrix, free_spaces(fut_matrix), constr_dict, 4, counter)
+    futoshiki_solver_fc(fut_matrix, (0,0), constr_dict, 15, counter)
+    #futoshiki_solver_fc_ran_pick(fut_matrix, free_spaces(fut_matrix), constr_dict, 4, counter)
     print_fut_matrix(list_of_solutions_ft[0], constr_dict)
     print(counter.get_counter_num())
 
@@ -454,8 +454,8 @@ def futoshiki_6_6_fc():
     #print(fut_matrix)
     #print(constr_dict)
     counter = SimpleCounter()
-    #futoshiki_solver_fc(fut_matrix, (0,0), constr_dict, 4, counter)
-    futoshiki_solver_fc_ran_pick(fut_matrix, free_spaces(fut_matrix), constr_dict, 4, counter)
+    futoshiki_solver_fc(fut_matrix, (0,0), constr_dict, 34 , counter)
+    #futoshiki_solver_fc_ran_pick(fut_matrix, free_spaces(fut_matrix), constr_dict, 4, counter)
     print(len(list_of_solutions_ft))
     print(counter.get_counter_num())
 
