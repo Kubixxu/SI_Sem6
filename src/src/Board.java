@@ -10,6 +10,22 @@ public class Board {
         this.board = board;
         playersTurn = playersTurn == PlayersTurn.BLACK ? PlayersTurn.WHITE : PlayersTurn.BLACK;
     }
+    public void printBoard() {
+        System.out.println("A B C D E F G ");
+        for (int i = 0; i < board.length; i++) {
+            System.out.println();
+            System.out.print(i + " ");
+            for (int j = 0; j < board[0].length; j++) {
+                switch (board[i][j]) {
+                    case BLACK -> System.out.print("b ");
+                    case WHITE -> System.out.print("w ");
+                    case BLACK_QUEEN -> System.out.print("B ");
+                    case WHITE_QUEEN -> System.out.print("W ");
+                    case EMPTY -> System.out.print("* ");
+                }
+            }
+        }
+    }
     public int countElements(Pawn[][] board, Color color) {
         int pawnNum = 0;
         for (int i = 0; i < board.length; i++) {
@@ -56,42 +72,572 @@ public class Board {
         }
         return possibleMoves;
     }
-    private ArrayList<Pawn[][]> possibleBeatings(Point coordinates) {
+    private ArrayList<Pawn[][]> possibleBeatings(Point coordinates, Pawn[][] board) {
         Pawn type = board[coordinates.x][coordinates.y];
         Color plrColor = type == Pawn.BLACK || type == Pawn.BLACK_QUEEN ? Color.BLACK : Color.WHITE;
+        ArrayList<Pawn[][]> beatingsToChooseFrom = new ArrayList<>();
         if(type == Pawn.BLACK) {
             if(coordinates.y > 1 && coordinates.x < MAX_X_CORD - 1 && (board[coordinates.x + 1][coordinates.y - 1] == Pawn.WHITE ||
                     board[coordinates.x + 1][coordinates.y - 1] == Pawn.WHITE_QUEEN) && board[coordinates.x + 2][coordinates.y - 2] == Pawn.EMPTY) {
 
                 Pawn[][] move = board.clone();
                 move[coordinates.x][coordinates.y] = Pawn.EMPTY;
-                move[coordinates.x + 1][coordinates.y - 1] = Pawn.BLACK;
+                move[coordinates.x + 1][coordinates.y - 1] = Pawn.EMPTY;
+                move[coordinates.x + 2][coordinates.y - 2] = Pawn.BLACK;
+                ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(coordinates.x + 2, coordinates.y - 2), move);
+                if(possibleBeatingsFurth != null) {
+                    beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                } else {
+                    beatingsToChooseFrom.add(move);
+                }
 
-            } else if(coordinates.y < MAX_Y_CORD - 1 && coordinates.x < MAX_X_CORD - 1 && (board[coordinates.x + 1][coordinates.y + 1] == Pawn.WHITE ||
+            } if(coordinates.y < MAX_Y_CORD - 1 && coordinates.x < MAX_X_CORD - 1 && (board[coordinates.x + 1][coordinates.y + 1] == Pawn.WHITE ||
                     board[coordinates.x + 1][coordinates.y + 1] == Pawn.WHITE_QUEEN) && board[coordinates.x + 2][coordinates.y + 2] == Pawn.EMPTY) {
                 Pawn[][] move = board.clone();
                 move[coordinates.x][coordinates.y] = Pawn.EMPTY;
-                move[coordinates.x + 1][coordinates.y + 1] = Pawn.BLACK;
+                move[coordinates.x + 1][coordinates.y + 1] = Pawn.EMPTY;
+                move[coordinates.x + 2][coordinates.y + 2] = Pawn.BLACK;
+                ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(coordinates.x + 2, coordinates.y + 2), move);
+                if(possibleBeatingsFurth != null) {
+                    beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                } else {
+                    beatingsToChooseFrom.add(move);
+                }
 
-            } else if(coordinates.y < MAX_Y_CORD - 1 && coordinates.x > 1 && (board[coordinates.x - 1][coordinates.y + 1] == Pawn.WHITE ||
+            } if(coordinates.y < MAX_Y_CORD - 1 && coordinates.x > 1 && (board[coordinates.x - 1][coordinates.y + 1] == Pawn.WHITE ||
                     board[coordinates.x - 1][coordinates.y + 1] == Pawn.WHITE_QUEEN) && board[coordinates.x - 2][coordinates.y + 2] == Pawn.EMPTY) {
                 Pawn[][] move = board.clone();
                 move[coordinates.x][coordinates.y] = Pawn.EMPTY;
-                move[coordinates.x + 1][coordinates.y + 1] = Pawn.BLACK;
+                move[coordinates.x - 1][coordinates.y + 1] = Pawn.EMPTY;
+                move[coordinates.x - 2][coordinates.y + 2] = Pawn.BLACK;
+                ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(coordinates.x - 2, coordinates.y + 2), move);
+                if(possibleBeatingsFurth != null) {
+                    beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                } else {
+                    beatingsToChooseFrom.add(move);
+                }
+
+            } if(coordinates.y > 1 && coordinates.x > 1 && (board[coordinates.x - 1][coordinates.y - 1] == Pawn.WHITE ||
+                    board[coordinates.x - 1][coordinates.y - 1] == Pawn.WHITE_QUEEN) && board[coordinates.x - 2][coordinates.y - 2] == Pawn.EMPTY) {
+                Pawn[][] move = board.clone();
+                move[coordinates.x][coordinates.y] = Pawn.EMPTY;
+                move[coordinates.x - 1][coordinates.y - 1] = Pawn.EMPTY;
+                move[coordinates.x - 2][coordinates.y - 2] = Pawn.BLACK;
+                ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(coordinates.x - 2, coordinates.y - 2), move);
+                if(possibleBeatingsFurth != null) {
+                    beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                } else {
+                    beatingsToChooseFrom.add(move);
+                }
 
             }
+            if (beatingsToChooseFrom.isEmpty()) {
+                return null;
+            } else {
+                ArrayList<Pawn[][]> bestBeatings = new ArrayList<>();
+                bestBeatings.add(beatingsToChooseFrom.get(0));
+                for (int i = 1; i < beatingsToChooseFrom.size(); i++ ) {
+                    if(countElements(bestBeatings.get(0), Color.WHITE) == countElements(beatingsToChooseFrom.get(i), Color.WHITE)) {
+                        bestBeatings.add(beatingsToChooseFrom.get(i));
+                    } else if (countElements(bestBeatings.get(0), Color.WHITE) > countElements(beatingsToChooseFrom.get(i), Color.WHITE)) {
+                        bestBeatings.clear();
+                        bestBeatings.add(beatingsToChooseFrom.get(i));
+                    }
+                }
+                return bestBeatings;
+            }
+
         }
         else if (type == Pawn.WHITE) {
-            if(coordinates.y != 0 && coordinates.x != MAX_X_CORD && board[coordinates.x - 1][coordinates.y - 1] == Pawn.EMPTY) {
+            if(coordinates.y > 1 && coordinates.x < MAX_X_CORD - 1 && (board[coordinates.x + 1][coordinates.y - 1] == Pawn.BLACK ||
+                    board[coordinates.x + 1][coordinates.y - 1] == Pawn.BLACK_QUEEN) && board[coordinates.x + 2][coordinates.y - 2] == Pawn.EMPTY) {
+
                 Pawn[][] move = board.clone();
                 move[coordinates.x][coordinates.y] = Pawn.EMPTY;
-                move[coordinates.x - 1][coordinates.y - 1] = Pawn.WHITE;
+                move[coordinates.x + 1][coordinates.y - 1] = Pawn.EMPTY;
+                move[coordinates.x + 2][coordinates.y - 2] = Pawn.WHITE;
+                ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(coordinates.x + 2, coordinates.y - 2), move);
+                if(possibleBeatingsFurth != null) {
+                    beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                } else {
+                    beatingsToChooseFrom.add(move);
+                }
 
-            } else if(coordinates.y != MAX_Y_CORD && coordinates.x != MAX_X_CORD && board[coordinates.x - 1][coordinates.y + 1] == Pawn.EMPTY) {
+            } else if(coordinates.y < MAX_Y_CORD - 1 && coordinates.x < MAX_X_CORD - 1 && (board[coordinates.x + 1][coordinates.y + 1] == Pawn.BLACK ||
+                    board[coordinates.x + 1][coordinates.y + 1] == Pawn.BLACK_QUEEN) && board[coordinates.x + 2][coordinates.y + 2] == Pawn.EMPTY) {
                 Pawn[][] move = board.clone();
                 move[coordinates.x][coordinates.y] = Pawn.EMPTY;
-                move[coordinates.x - 1][coordinates.y + 1] = Pawn.WHITE;
+                move[coordinates.x + 1][coordinates.y + 1] = Pawn.EMPTY;
+                move[coordinates.x + 2][coordinates.y + 2] = Pawn.WHITE;
+                ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(coordinates.x + 2, coordinates.y + 2), move);
+                if(possibleBeatingsFurth != null) {
+                    beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                } else {
+                    beatingsToChooseFrom.add(move);
+                }
 
+            } else if(coordinates.y < MAX_Y_CORD - 1 && coordinates.x > 1 && (board[coordinates.x - 1][coordinates.y + 1] == Pawn.BLACK ||
+                    board[coordinates.x - 1][coordinates.y + 1] == Pawn.BLACK_QUEEN) && board[coordinates.x - 2][coordinates.y + 2] == Pawn.EMPTY) {
+                Pawn[][] move = board.clone();
+                move[coordinates.x][coordinates.y] = Pawn.EMPTY;
+                move[coordinates.x - 1][coordinates.y + 1] = Pawn.EMPTY;
+                move[coordinates.x - 2][coordinates.y + 2] = Pawn.WHITE;
+                ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(coordinates.x - 2, coordinates.y + 2), move);
+                if(possibleBeatingsFurth != null) {
+                    beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                } else {
+                    beatingsToChooseFrom.add(move);
+                }
+
+            } else if(coordinates.y > 1 && coordinates.x > 1 && (board[coordinates.x - 1][coordinates.y - 1] == Pawn.BLACK ||
+                    board[coordinates.x - 1][coordinates.y - 1] == Pawn.BLACK_QUEEN) && board[coordinates.x - 2][coordinates.y - 2] == Pawn.EMPTY) {
+                Pawn[][] move = board.clone();
+                move[coordinates.x][coordinates.y] = Pawn.EMPTY;
+                move[coordinates.x - 1][coordinates.y - 1] = Pawn.EMPTY;
+                move[coordinates.x - 2][coordinates.y - 2] = Pawn.WHITE;
+                ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(coordinates.x - 2, coordinates.y - 2), move);
+                if(possibleBeatingsFurth != null) {
+                    beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                } else {
+                    beatingsToChooseFrom.add(move);
+                }
+
+            }
+            if (beatingsToChooseFrom.isEmpty()) {
+                return null;
+            } else {
+                ArrayList<Pawn[][]> bestBeatings = new ArrayList<>();
+                bestBeatings.add(beatingsToChooseFrom.get(0));
+                for (int i = 1; i < beatingsToChooseFrom.size(); i++ ) {
+                    if(countElements(bestBeatings.get(0), Color.BLACK) == countElements(beatingsToChooseFrom.get(i), Color.BLACK)) {
+                        bestBeatings.add(beatingsToChooseFrom.get(i));
+                    } else if (countElements(bestBeatings.get(0), Color.BLACK) > countElements(beatingsToChooseFrom.get(i), Color.BLACK)) {
+                        bestBeatings.clear();
+                        bestBeatings.add(beatingsToChooseFrom.get(i));
+                    }
+                }
+                return bestBeatings;
+            }
+        } else if (type == Pawn.BLACK_QUEEN) {
+            int startRowUp = coordinates.x++;
+            int startRowDown = coordinates.x--;
+            int startColumnUp = coordinates.y++;
+            int startColumnDown = coordinates.y--;
+            while (startRowUp <= MAX_X_CORD && board[startRowUp][coordinates.y] == Pawn.EMPTY) {
+                startRowUp++;
+            }
+            if (board[startRowUp][coordinates.y] == Pawn.WHITE || board[startRowUp][coordinates.y] == Pawn.WHITE_QUEEN) {
+                int cordX = startRowUp;
+                int cordY = coordinates.y;
+                startRowUp++;
+                while (startRowUp <= MAX_X_CORD && board[startRowUp][coordinates.y] == Pawn.EMPTY) {
+                    Pawn[][] move = board.clone();
+                    move[coordinates.x][coordinates.y] = Pawn.EMPTY;
+                    move[cordX][cordY] = Pawn.EMPTY;
+                    move[startRowUp][coordinates.y] = Pawn.BLACK_QUEEN;
+                    ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(startRowUp, coordinates.y), move);
+                    if(possibleBeatingsFurth != null) {
+                        beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                    } else {
+                        beatingsToChooseFrom.add(move);
+                    }
+                    startRowUp++;
+                }
+            }
+            while (startRowDown >= 0 && board[startRowDown][coordinates.y] == Pawn.EMPTY) {
+                startRowDown--;
+            }
+            if (board[startRowDown][coordinates.y] == Pawn.WHITE || board[startRowDown][coordinates.y] == Pawn.WHITE_QUEEN) {
+                int cordX = startRowDown;
+                int cordY = coordinates.y;
+                startRowDown--;
+                while (startRowDown >= 0 && board[startRowDown][coordinates.y] == Pawn.EMPTY) {
+                    Pawn[][] move = board.clone();
+                    move[coordinates.x][coordinates.y] = Pawn.EMPTY;
+                    move[cordX][cordY] = Pawn.EMPTY;
+                    move[startRowDown][coordinates.y] = Pawn.BLACK_QUEEN;
+                    ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(startRowDown, coordinates.y), move);
+                    if(possibleBeatingsFurth != null) {
+                        beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                    } else {
+                        beatingsToChooseFrom.add(move);
+                    }
+                    startRowDown--;
+                }
+            }
+            while (startColumnUp <= MAX_Y_CORD && board[coordinates.x][startColumnUp] == Pawn.EMPTY) {
+                startColumnUp++;
+            }
+            if(board[coordinates.x][startColumnUp] == Pawn.WHITE || board[coordinates.x][startColumnUp] == Pawn.WHITE_QUEEN) {
+                int cordX = coordinates.x;
+                int cordY = startColumnUp;
+                startColumnUp++;
+                while (startColumnUp <= MAX_Y_CORD && board[coordinates.x][startColumnUp] == Pawn.EMPTY) {
+                    Pawn[][] move = board.clone();
+                    move[coordinates.x][coordinates.y] = Pawn.EMPTY;
+                    move[cordX][cordY] = Pawn.EMPTY;
+                    move[coordinates.x][startColumnUp] = Pawn.BLACK_QUEEN;
+                    ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(coordinates.x, startColumnUp), move);
+                    if(possibleBeatingsFurth != null) {
+                        beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                    } else {
+                        beatingsToChooseFrom.add(move);
+                    }
+                    startColumnUp++;
+                }
+            }
+            while (startColumnDown >= 0 && board[coordinates.x][startColumnDown] == Pawn.EMPTY) {
+                startColumnDown--;
+            }
+            if(board[coordinates.x][startColumnDown] == Pawn.WHITE || board[coordinates.x][startColumnDown] == Pawn.WHITE_QUEEN) {
+                startColumnDown--;
+                int cordX = coordinates.x;
+                int cordY = startColumnUp;
+                while (startColumnDown >= 0 && board[coordinates.x][startColumnDown] == Pawn.EMPTY) {
+                    Pawn[][] move = board.clone();
+                    move[coordinates.x][coordinates.y] = Pawn.EMPTY;
+                    move[cordX][cordY] = Pawn.EMPTY;
+                    move[coordinates.x][startColumnDown] = Pawn.BLACK_QUEEN;
+                    ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(coordinates.x, startColumnDown), move);
+                    if(possibleBeatingsFurth != null) {
+                        beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                    } else {
+                        beatingsToChooseFrom.add(move);
+                    }
+                    startColumnDown--;
+                }
+            }
+            startRowUp = coordinates.x++;
+            startRowDown = coordinates.x--;
+            startColumnUp = coordinates.y++;
+            startColumnDown = coordinates.y--;
+            while (startRowUp <= MAX_X_CORD && startColumnUp <= MAX_Y_CORD && board[startRowUp][startColumnUp] == Pawn.EMPTY) {
+                startRowUp++;
+                startColumnUp++;
+            }
+            if(board[startRowUp][startColumnUp] == Pawn.WHITE || board[startRowUp][startColumnUp] == Pawn.WHITE_QUEEN) {
+                int cordX = startRowUp;
+                int cordY = startColumnUp;
+                startRowUp++;
+                startColumnUp++;
+                while (startRowUp <= MAX_X_CORD && startColumnUp <= MAX_Y_CORD && board[startRowUp][startColumnUp] == Pawn.EMPTY) {
+                    Pawn[][] move = board.clone();
+                    move[coordinates.x][coordinates.y] = Pawn.EMPTY;
+                    move[cordX][cordY] = Pawn.EMPTY;
+                    move[startRowUp][startColumnUp] = Pawn.BLACK_QUEEN;
+                    ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(startRowUp, startColumnUp), move);
+                    if(possibleBeatingsFurth != null) {
+                        beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                    } else {
+                        beatingsToChooseFrom.add(move);
+                    }
+                    startRowUp++;
+                    startColumnUp++;
+                }
+            }
+            startRowUp = coordinates.x++;
+            startColumnUp = coordinates.y++;
+            while (startRowUp <= MAX_X_CORD && startColumnDown >= 0 && board[startRowUp][startColumnDown] == Pawn.EMPTY) {
+                startRowUp++;
+                startColumnDown--;
+            }
+            if(board[startRowUp][startColumnDown] == Pawn.WHITE || board[startRowUp][startColumnDown] == Pawn.WHITE_QUEEN) {
+                int cordX = startRowUp;
+                int cordY = startColumnDown;
+                startRowUp++;
+                startColumnDown--;
+                while (startRowUp <= MAX_X_CORD && startColumnDown >= 0 && board[startRowUp][startColumnDown] == Pawn.EMPTY) {
+                    Pawn[][] move = board.clone();
+                    move[coordinates.x][coordinates.y] = Pawn.EMPTY;
+                    move[cordX][cordY] = Pawn.EMPTY;
+                    move[startRowUp][startColumnDown] = Pawn.BLACK_QUEEN;
+                    ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(startRowUp, startColumnDown), move);
+                    if(possibleBeatingsFurth != null) {
+                        beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                    } else {
+                        beatingsToChooseFrom.add(move);
+                    }
+                    startRowUp++;
+                    startColumnDown--;
+                }
+            }
+            startRowUp = coordinates.x++;
+            startColumnDown = coordinates.y--;
+            while (startRowDown >= 0 && startColumnDown >= 0 && board[startRowDown][startColumnDown] == Pawn.EMPTY) {
+                startRowDown--;
+                startColumnDown--;
+            }
+            if (board[startRowDown][startColumnDown] == Pawn.WHITE || board[startRowDown][startColumnDown] == Pawn.WHITE_QUEEN) {
+                int cordX = startRowDown;
+                int cordY = startColumnDown;
+                startRowDown--;
+                startColumnDown--;
+                while (startRowDown >= 0 && startColumnDown >= 0 && board[startRowDown][startColumnDown] == Pawn.EMPTY) {
+                    Pawn[][] move = board.clone();
+                    move[coordinates.x][coordinates.y] = Pawn.EMPTY;
+                    move[cordX][cordY] = Pawn.EMPTY;
+                    move[startRowDown][startColumnDown] = Pawn.BLACK_QUEEN;
+                    ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(startRowDown, startColumnDown), move);
+                    if(possibleBeatingsFurth != null) {
+                        beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                    } else {
+                        beatingsToChooseFrom.add(move);
+                    }
+                    startRowDown--;
+                    startColumnDown--;
+                }
+            }
+            startRowDown = coordinates.x--;
+            startColumnDown = coordinates.y--;
+            while (startRowDown >= 0 && startColumnUp <= MAX_Y_CORD && board[startRowDown][startColumnUp] == Pawn.EMPTY) {
+                startRowDown--;
+                startColumnUp++;
+            }
+            if (board[startRowDown][startColumnUp] == Pawn.WHITE || board[startRowDown][startColumnUp] == Pawn.WHITE_QUEEN) {
+                int cordX = startRowDown;
+                int cordY = startColumnUp;
+                startRowDown--;
+                startColumnUp++;
+                while (startRowDown >= 0 && startColumnUp <= MAX_Y_CORD && board[startRowDown][startColumnUp] == Pawn.EMPTY) {
+                    Pawn[][] move = board.clone();
+                    move[coordinates.x][coordinates.y] = Pawn.EMPTY;
+                    move[cordX][cordY] = Pawn.EMPTY;
+                    move[startRowDown][startColumnUp] = Pawn.BLACK_QUEEN;
+                    ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(startRowDown, startColumnUp), move);
+                    if(possibleBeatingsFurth != null) {
+                        beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                    } else {
+                        beatingsToChooseFrom.add(move);
+                    }
+                    startRowDown--;
+                    startColumnUp++;
+                }
+            }
+            if (beatingsToChooseFrom.isEmpty()) {
+                return null;
+            } else {
+                ArrayList<Pawn[][]> bestBeatings = new ArrayList<>();
+                bestBeatings.add(beatingsToChooseFrom.get(0));
+                for (int i = 1; i < beatingsToChooseFrom.size(); i++ ) {
+                    if(countElements(bestBeatings.get(0), Color.WHITE) == countElements(beatingsToChooseFrom.get(i), Color.WHITE)) {
+                        bestBeatings.add(beatingsToChooseFrom.get(i));
+                    } else if (countElements(bestBeatings.get(0), Color.WHITE) > countElements(beatingsToChooseFrom.get(i), Color.WHITE)) {
+                        bestBeatings.clear();
+                        bestBeatings.add(beatingsToChooseFrom.get(i));
+                    }
+                }
+                return bestBeatings;
+            }
+
+        } else if (type == Pawn.WHITE_QUEEN) {
+            int startRowUp = coordinates.x++;
+            int startRowDown = coordinates.x--;
+            int startColumnUp = coordinates.y++;
+            int startColumnDown = coordinates.y--;
+            while (startRowUp <= MAX_X_CORD && board[startRowUp][coordinates.y] == Pawn.EMPTY) {
+                startRowUp++;
+            }
+            if (board[startRowUp][coordinates.y] == Pawn.BLACK || board[startRowUp][coordinates.y] == Pawn.BLACK_QUEEN) {
+                int cordX = startRowUp;
+                int cordY = coordinates.y;
+                startRowUp++;
+                while (startRowUp <= MAX_X_CORD && board[startRowUp][coordinates.y] == Pawn.EMPTY) {
+                    Pawn[][] move = board.clone();
+                    move[coordinates.x][coordinates.y] = Pawn.EMPTY;
+                    move[cordX][cordY] = Pawn.EMPTY;
+                    move[startRowUp][coordinates.y] = Pawn.WHITE_QUEEN;
+                    ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(startRowUp, coordinates.y), move);
+                    if(possibleBeatingsFurth != null) {
+                        beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                    } else {
+                        beatingsToChooseFrom.add(move);
+                    }
+                    startRowUp++;
+                }
+            }
+            while (startRowDown >= 0 && board[startRowDown][coordinates.y] == Pawn.EMPTY) {
+                startRowDown--;
+            }
+            if (board[startRowDown][coordinates.y] == Pawn.BLACK || board[startRowDown][coordinates.y] == Pawn.BLACK_QUEEN) {
+                int cordX = startRowDown;
+                int cordY = coordinates.y;
+                startRowDown--;
+                while (startRowDown >= 0 && board[startRowDown][coordinates.y] == Pawn.EMPTY) {
+                    Pawn[][] move = board.clone();
+                    move[coordinates.x][coordinates.y] = Pawn.EMPTY;
+                    move[cordX][cordY] = Pawn.EMPTY;
+                    move[startRowDown][coordinates.y] = Pawn.WHITE_QUEEN;
+                    ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(startRowDown, coordinates.y), move);
+                    if(possibleBeatingsFurth != null) {
+                        beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                    } else {
+                        beatingsToChooseFrom.add(move);
+                    }
+                    startRowDown--;
+                }
+            }
+            while (startColumnUp <= MAX_Y_CORD && board[coordinates.x][startColumnUp] == Pawn.EMPTY) {
+                startColumnUp++;
+            }
+            if(board[coordinates.x][startColumnUp] == Pawn.BLACK || board[coordinates.x][startColumnUp] == Pawn.BLACK_QUEEN) {
+                int cordX = coordinates.x;
+                int cordY = startColumnUp;
+                startColumnUp++;
+                while (startColumnUp <= MAX_Y_CORD && board[coordinates.x][startColumnUp] == Pawn.EMPTY) {
+                    Pawn[][] move = board.clone();
+                    move[coordinates.x][coordinates.y] = Pawn.EMPTY;
+                    move[cordX][cordY] = Pawn.EMPTY;
+                    move[coordinates.x][startColumnUp] = Pawn.WHITE_QUEEN;
+                    ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(coordinates.x, startColumnUp), move);
+                    if(possibleBeatingsFurth != null) {
+                        beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                    } else {
+                        beatingsToChooseFrom.add(move);
+                    }
+                    startColumnUp++;
+                }
+            }
+            while (startColumnDown >= 0 && board[coordinates.x][startColumnDown] == Pawn.EMPTY) {
+                startColumnDown--;
+            }
+            if(board[coordinates.x][startColumnDown] == Pawn.BLACK || board[coordinates.x][startColumnDown] == Pawn.BLACK_QUEEN) {
+                int cordX = coordinates.x;
+                int cordY = startColumnDown;
+                startColumnDown--;
+                while (startColumnDown >= 0 && board[coordinates.x][startColumnDown] == Pawn.EMPTY) {
+                    Pawn[][] move = board.clone();
+                    move[coordinates.x][coordinates.y] = Pawn.EMPTY;
+                    move[cordX][cordY] = Pawn.EMPTY;
+                    move[coordinates.x][startColumnDown] = Pawn.WHITE_QUEEN;
+                    ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(coordinates.x, startColumnDown), move);
+                    if(possibleBeatingsFurth != null) {
+                        beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                    } else {
+                        beatingsToChooseFrom.add(move);
+                    }
+                    startColumnDown--;
+                }
+            }
+            startRowUp = coordinates.x++;
+            startRowDown = coordinates.x--;
+            startColumnUp = coordinates.y++;
+            startColumnDown = coordinates.y--;
+            while (startRowUp <= MAX_X_CORD && startColumnUp <= MAX_Y_CORD && board[startRowUp][startColumnUp] == Pawn.EMPTY) {
+                startRowUp++;
+                startColumnUp++;
+            }
+            if(board[startRowUp][startColumnUp] == Pawn.BLACK || board[startRowUp][startColumnUp] == Pawn.BLACK_QUEEN) {
+                int cordX = startRowUp;
+                int cordY = startColumnUp;
+                startRowUp++;
+                startColumnUp++;
+                while (startRowUp <= MAX_X_CORD && startColumnUp <= MAX_Y_CORD && board[startRowUp][startColumnUp] == Pawn.EMPTY) {
+                    Pawn[][] move = board.clone();
+                    move[coordinates.x][coordinates.y] = Pawn.EMPTY;
+                    move[cordX][cordY] = Pawn.EMPTY;
+                    move[startRowUp][startColumnUp] = Pawn.WHITE_QUEEN;
+                    ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(startRowUp, startColumnUp), move);
+                    if(possibleBeatingsFurth != null) {
+                        beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                    } else {
+                        beatingsToChooseFrom.add(move);
+                    }
+                    startRowUp++;
+                    startColumnUp++;
+                }
+            }
+            startRowUp = coordinates.x++;
+            startColumnUp = coordinates.y++;
+            while (startRowUp <= MAX_X_CORD && startColumnDown >= 0 && board[startRowUp][startColumnDown] == Pawn.EMPTY) {
+                startRowUp++;
+                startColumnDown--;
+            }
+            if(board[startRowUp][startColumnDown] == Pawn.BLACK || board[startRowUp][startColumnDown] == Pawn.BLACK_QUEEN) {
+                int cordX = startRowUp;
+                int cordY = startColumnDown;
+                startRowUp++;
+                startColumnDown--;
+                while (startRowUp <= MAX_X_CORD && startColumnDown >= 0 && board[startRowUp][startColumnDown] == Pawn.EMPTY) {
+                    Pawn[][] move = board.clone();
+                    move[coordinates.x][coordinates.y] = Pawn.EMPTY;
+                    move[cordX][cordY] = Pawn.EMPTY;
+                    move[startRowUp][startColumnDown] = Pawn.WHITE_QUEEN;
+                    ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(startRowUp, startColumnDown), move);
+                    if(possibleBeatingsFurth != null) {
+                        beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                    } else {
+                        beatingsToChooseFrom.add(move);
+                    }
+                    startRowUp++;
+                    startColumnDown--;
+                }
+            }
+            startRowUp = coordinates.x++;
+            startColumnDown = coordinates.y--;
+            while (startRowDown >= 0 && startColumnDown >= 0 && board[startRowDown][startColumnDown] == Pawn.EMPTY) {
+                startRowDown--;
+                startColumnDown--;
+            }
+            if (board[startRowDown][startColumnDown] == Pawn.BLACK || board[startRowDown][startColumnDown] == Pawn.BLACK_QUEEN) {
+                int cordX = startRowDown;
+                int cordY = startColumnDown;
+                startRowDown--;
+                startColumnDown--;
+                while (startRowDown >= 0 && startColumnDown >= 0 && board[startRowDown][startColumnDown] == Pawn.EMPTY) {
+                    Pawn[][] move = board.clone();
+                    move[coordinates.x][coordinates.y] = Pawn.EMPTY;
+                    move[cordX][cordY] = Pawn.EMPTY;
+                    move[startRowDown][startColumnDown] = Pawn.WHITE_QUEEN;
+                    ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(startRowDown, startColumnDown), move);
+                    if(possibleBeatingsFurth != null) {
+                        beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                    } else {
+                        beatingsToChooseFrom.add(move);
+                    }
+                    startRowDown--;
+                    startColumnDown--;
+                }
+            }
+            startRowDown = coordinates.x--;
+            startColumnDown = coordinates.y--;
+            while (startRowDown >= 0 && startColumnUp <= MAX_Y_CORD && board[startRowDown][startColumnUp] == Pawn.EMPTY) {
+                startRowDown--;
+                startColumnUp++;
+            }
+            if (board[startRowDown][startColumnUp] == Pawn.BLACK || board[startRowDown][startColumnUp] == Pawn.BLACK_QUEEN) {
+                int cordX = startRowDown;
+                int cordY = startColumnUp;
+                startRowDown--;
+                startColumnUp++;
+                while (startRowDown >= 0 && startColumnUp <= MAX_Y_CORD && board[startRowDown][startColumnUp] == Pawn.EMPTY) {
+                    Pawn[][] move = board.clone();
+                    move[coordinates.x][coordinates.y] = Pawn.EMPTY;
+                    move[cordX][cordY] = Pawn.EMPTY;
+                    move[startRowDown][startColumnUp] = Pawn.WHITE_QUEEN;
+                    ArrayList<Pawn[][]> possibleBeatingsFurth = possibleBeatings(new Point(startRowDown, startColumnUp), move);
+                    if(possibleBeatingsFurth != null) {
+                        beatingsToChooseFrom.addAll(possibleBeatingsFurth);
+                    } else {
+                        beatingsToChooseFrom.add(move);
+                    }
+                    startRowDown--;
+                    startColumnUp++;
+                }
+            }
+            if (beatingsToChooseFrom.isEmpty()) {
+                return null;
+            } else {
+                ArrayList<Pawn[][]> bestBeatings = new ArrayList<>();
+                bestBeatings.add(beatingsToChooseFrom.get(0));
+                for (int i = 1; i < beatingsToChooseFrom.size(); i++ ) {
+                    if(countElements(bestBeatings.get(0), Color.BLACK) == countElements(beatingsToChooseFrom.get(i), Color.BLACK)) {
+                        bestBeatings.add(beatingsToChooseFrom.get(i));
+                    } else if (countElements(bestBeatings.get(0), Color.BLACK) > countElements(beatingsToChooseFrom.get(i), Color.BLACK)) {
+                        bestBeatings.clear();
+                        bestBeatings.add(beatingsToChooseFrom.get(i));
+                    }
+                }
+                return bestBeatings;
             }
         }
         return null;
@@ -105,6 +651,10 @@ public class Board {
             throw new IllegalArgumentException(coordinates.y + " must be in the range of 0-" + MAX_Y_CORD);
         }
         Pawn color = board[coordinates.x][coordinates.y];
+        ArrayList<Pawn[][]> possibleBeatings = possibleBeatings(coordinates, this.board);
+        if (possibleBeatings != null) {
+            return possibleBeatings;
+        }
         if(color == Pawn.BLACK) {
             if(coordinates.y != 0 && coordinates.x != MAX_X_CORD && board[coordinates.x + 1][coordinates.y - 1] == Pawn.EMPTY) {
                 Pawn[][] move = board.clone();
@@ -147,7 +697,7 @@ public class Board {
                 move[coordinates.x][coordinates.y] = Pawn.EMPTY;
                 move[startRowDown][coordinates.y] = color;
                 possibleMoves.add(move);
-                startRowUp--;
+                startRowDown--;
             }
             while (startColumnUp <= MAX_Y_CORD && board[coordinates.x][startColumnUp] == Pawn.EMPTY) {
                 Pawn[][] move = board.clone();
