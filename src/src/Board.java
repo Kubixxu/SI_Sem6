@@ -113,6 +113,18 @@ public class Board {
             nv[i] = Arrays.copyOf(board[i], board[i].length);
         return nv;
     }
+    public int countQueens(Color color) {
+        Pawn pawnToLookFor = color == Color.WHITE ? Pawn.WHITE_QUEEN : Pawn.BLACK_QUEEN;
+        int queenNum = 0;
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (board[i][j] == pawnToLookFor) {
+                    queenNum++;
+                }
+            }
+        }
+        return queenNum;
+    }
     private ArrayList<Pawn[][]> possibleBeatings(Point coordinates, Pawn[][] board) {
         Pawn type = board[coordinates.x][coordinates.y];
         Color plrColor = type == Pawn.BLACK || type == Pawn.BLACK_QUEEN ? Color.BLACK : Color.WHITE;
