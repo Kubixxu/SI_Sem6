@@ -7,6 +7,11 @@ public class Game {
     private CheckersPlayer blackPlayer;
     private Board gameBoard;
     public final int MAX_QUEEN_MOVES = 15;
+    public Game(Board gameBoard, CheckersPlayer whitePlayer, CheckersPlayer blackPlayer) {
+        this.gameBoard = gameBoard;
+        this.whitePlayer = whitePlayer;
+        this.blackPlayer = blackPlayer;
+    }
     public void playGame() {
         boolean isGameOver = false;
         Color winner = null;
