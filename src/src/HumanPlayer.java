@@ -49,10 +49,10 @@ public class HumanPlayer implements CheckersPlayer {
     }
 
     @Override
-    public AbstractMap.SimpleEntry<Pawn[][], Pawn> moveRandomly() {
+    public Pawn[][] moveRandomly() {
         Random randomGen = new Random();
         ArrayList<Pawn[][]> moves = gameBoard.allPossibleMoves(color);
-        return new AbstractMap.SimpleEntry<>(moves.get(randomGen.nextInt(0, moves.size())), gameBoard.getBoard()[0][0]);
+        return moves.get(randomGen.nextInt(0, moves.size()));
     }
 
     private Point mapStringCordsToPoint(String pawnsCord) {

@@ -1,7 +1,8 @@
-import java.awt.*;
+
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Random;
+
 
 public class AiPlayer implements CheckersPlayer {
     private Board gameBoard;
@@ -13,10 +14,10 @@ public class AiPlayer implements CheckersPlayer {
         return minimaxAlphaBeta(gameBoard, DEPTH, color, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY).getKey();
     }
     @Override
-    public AbstractMap.SimpleEntry<Pawn[][], Pawn> moveRandomly() {
+    public Pawn[][] moveRandomly() {
         Random randomGen = new Random();
         ArrayList<Pawn[][]> moves = gameBoard.allPossibleMoves(color);
-        return new AbstractMap.SimpleEntry<>(moves.get(randomGen.nextInt(0, moves.size())), gameBoard.getBoard()[0][0]);
+        return moves.get(randomGen.nextInt(0, moves.size()));
     }
     private double evaluateBoard(Board gameBoard) {
         Color enemyColor = color == Color.WHITE ? Color.BLACK : Color.WHITE;
@@ -33,7 +34,7 @@ public class AiPlayer implements CheckersPlayer {
         Color enemyColor = color == Color.WHITE ? Color.BLACK : Color.WHITE;
         int [] pawnsInZonesPlr = numberOfPawnsInZones(color);
         int [] pawnsInZonesEnm = numberOfPawnsInZones(enemyColor);
-        return pawnsInZonesPlr;
+        return pawnsInZonesPlr[0] + pawnsInZonesPlr[1] * 2.0 + pawnsInZonesPlr[2] * 4.0 - pawnsInZonesEnm[0] - pawnsInZonesEnm[1] * 2.0 - pawnsInZonesEnm[2] * 4.0;
     }
 
     private int [] numberOfPawnsInZones(Color color) {
@@ -66,7 +67,13 @@ public class AiPlayer implements CheckersPlayer {
                 }
             }
         }
-        if 
+        if (color == Color.WHITE) {
+            int [] revArray = new int[3];
+            revArray[0] = numOfPawnsByZone[2];
+            revArray[1] = numOfPawnsByZone[1];
+            revArray[2] = numOfPawnsByZone[0];
+            return revArray;
+        }
         return numOfPawnsByZone;
     }
 

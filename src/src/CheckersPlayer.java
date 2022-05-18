@@ -2,6 +2,5 @@ import java.util.AbstractMap.SimpleEntry;
 
 public interface CheckersPlayer {
     public Pawn[][] move();
-    public SimpleEntry<Pawn[][], Pawn> move();
-    public SimpleEntry<Pawn[][], Pawn> moveRandomly();
+    public Pawn[][] moveRandomly();
 }
