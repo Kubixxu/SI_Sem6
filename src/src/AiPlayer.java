@@ -1,16 +1,23 @@
 import java.awt.*;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class AiPlayer implements CheckersPlayer {
     private Board gameBoard;
+    //private Game game;
     private Color color;
     public final int DEPTH = 6;
     @Override
     public AbstractMap.SimpleEntry<Pawn[][], Pawn> move() {
         return new AbstractMap.SimpleEntry<>(minimaxAlphaBeta(gameBoard, DEPTH, color, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY).getKey(), gameBoard.getBoard()[0][0]);
     }
-
+    @Override
+    public AbstractMap.SimpleEntry<Pawn[][], Pawn> moveRandomly() {
+        Random randomGen = new Random();
+        ArrayList<Pawn[][]> moves = gameBoard.allPossibleMoves(color);
+        return new AbstractMap.SimpleEntry<>(moves.get(randomGen.nextInt(0, moves.size())), gameBoard.getBoard()[0][0]);
+    }
     private double evaluateBoard(Board gameBoard) {
         Color enemyColor = color == Color.WHITE ? Color.BLACK : Color.WHITE;
         return gameBoard.countElements(gameBoard.getBoard(), color) - gameBoard.countElements(gameBoard.getBoard(), enemyColor);

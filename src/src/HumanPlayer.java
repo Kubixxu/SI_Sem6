@@ -1,12 +1,16 @@
 import java.awt.*;
 import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 public class HumanPlayer implements CheckersPlayer {
-    public HumanPlayer(Board board) {
+    public HumanPlayer(Board board, Color clr) {
         gameBoard = board;
+        color = clr;
     }
     private Board gameBoard;
+    private Color color;
     @Override
     public AbstractMap.SimpleEntry<Pawn[][], Pawn> move() {
         Scanner scanner = new Scanner(System.in);
@@ -43,6 +47,14 @@ public class HumanPlayer implements CheckersPlayer {
         }
         return new AbstractMap.SimpleEntry<>(boardCopy, chosenPawn);
     }
+
+    @Override
+    public AbstractMap.SimpleEntry<Pawn[][], Pawn> moveRandomly() {
+        Random randomGen = new Random();
+        ArrayList<Pawn[][]> moves = gameBoard.allPossibleMoves(color);
+        return new AbstractMap.SimpleEntry<>(moves.get(randomGen.nextInt(0, moves.size())), gameBoard.getBoard()[0][0]);
+    }
+
     private Point mapStringCordsToPoint(String pawnsCord) {
         int xCord;
         int yCord;

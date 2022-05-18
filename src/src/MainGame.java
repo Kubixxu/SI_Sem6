@@ -6,7 +6,7 @@ public class MainGame {
         Game game = new Game(board, humanPlayer1, humanPlayer2);
         game.playGame();*/
         Board board = new Board();
-        CheckersPlayer humanPlayer = new HumanPlayer(board);
+        CheckersPlayer humanPlayer = new HumanPlayer(board, Color.WHITE);
         CheckersPlayer aiPlayer = new AiPlayer(board, Color.BLACK);
         Game game = new Game(board, humanPlayer, aiPlayer);
         game.playGame();

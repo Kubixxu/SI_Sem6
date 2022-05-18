@@ -15,8 +15,9 @@ public class Game {
     public void playGame() {
         boolean isGameOver = false;
         Color winner = null;
-        Color playersTurn = Color.WHITE;
+        Color playersTurn = Color.BLACK;
         int queenMoves = 0;
+        gameBoard.move(whitePlayer.moveRandomly().getKey());
         while(!isGameOver) {
             gameBoard.printBoard();
             ArrayList<Pawn[][]> possibleMoves = gameBoard.allPossibleMoves(playersTurn);
