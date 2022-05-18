@@ -8,7 +8,7 @@ public class HumanPlayer implements CheckersPlayer {
     }
     private Board gameBoard;
     @Override
-    public AbstractMap.SimpleEntry<Pawn[][], Pawn> move() {
+    public Pawn[][] move() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Give the pawn that you want to move");
         String pawnsCords = scanner.nextLine();
@@ -41,7 +41,7 @@ public class HumanPlayer implements CheckersPlayer {
         for (String cord : singleCords) {
             boardCopy[mapStringCordsToPoint(cord).x][mapStringCordsToPoint(cord).y] = Pawn.EMPTY;
         }
-        return new AbstractMap.SimpleEntry<>(boardCopy, chosenPawn);
+        return boardCopy;
     }
     private Point mapStringCordsToPoint(String pawnsCord) {
         int xCord;

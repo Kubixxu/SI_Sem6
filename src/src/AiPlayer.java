@@ -7,8 +7,8 @@ public class AiPlayer implements CheckersPlayer {
     private Color color;
     public final int DEPTH = 6;
     @Override
-    public AbstractMap.SimpleEntry<Pawn[][], Pawn> move() {
-        return new AbstractMap.SimpleEntry<>(minimaxAlphaBeta(gameBoard, DEPTH, color, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY).getKey(), gameBoard.getBoard()[0][0]);
+    public Pawn[][] move() {
+        return minimaxAlphaBeta(gameBoard, DEPTH, color, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY).getKey();
     }
 
     private double evaluateBoard(Board gameBoard) {
