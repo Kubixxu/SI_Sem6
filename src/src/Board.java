@@ -125,6 +125,18 @@ public class Board {
         }
         return queenNum;
     }
+
+    public boolean queensAlone() {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (board[i][j] != Pawn.BLACK_QUEEN && board[i][j] != Pawn.WHITE_QUEEN && board[i][j] != Pawn.EMPTY) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private ArrayList<Pawn[][]> possibleBeatings(Point coordinates, Pawn[][] board) {
         Pawn type = board[coordinates.x][coordinates.y];
         Color plrColor = type == Pawn.BLACK || type == Pawn.BLACK_QUEEN ? Color.BLACK : Color.WHITE;

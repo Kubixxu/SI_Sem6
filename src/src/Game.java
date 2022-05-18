@@ -6,7 +6,7 @@ public class Game {
     private CheckersPlayer whitePlayer;
     private CheckersPlayer blackPlayer;
     private Board gameBoard;
-    public final int MAX_QUEEN_MOVES = 15;
+    public final int MAX_QUEEN_MOVES = 30;
     public Game(Board gameBoard, CheckersPlayer whitePlayer, CheckersPlayer blackPlayer) {
         this.gameBoard = gameBoard;
         this.whitePlayer = whitePlayer;
@@ -25,29 +25,24 @@ public class Game {
                 winner = playersTurn == Color.WHITE ? Color.BLACK : Color.WHITE;
                 isGameOver = true;
             } else if (playersTurn == Color.WHITE) {
-                SimpleEntry<Pawn[][], Pawn> move = whitePlayer.move();
-                Pawn[][] playersMove = move.getKey();
+                Pawn[][] move = whitePlayer.move();
+                Pawn[][] playersMove = move;
                 if(checkIfMoveIsPossible(playersMove, possibleMoves)) {
                     gameBoard.move(playersMove);
                     playersTurn = Color.BLACK;
                 }
-                if(move.getValue() == Pawn.WHITE_QUEEN) {
-                    queenMoves++;
-                } else {
-                    queenMoves = 0;
-                }
+
             } else {
-                SimpleEntry<Pawn[][], Pawn> move = blackPlayer.move();
-                Pawn[][] playersMove = move.getKey();
+               Pawn[][] move = blackPlayer.move();
+                Pawn[][] playersMove = move;
                 if(checkIfMoveIsPossible(playersMove, possibleMoves)) {
                     gameBoard.move(playersMove);
                     playersTurn = Color.WHITE;
                 }
-                if(move.getValue() == Pawn.BLACK_QUEEN) {
-                    queenMoves++;
-                } else {
-                    queenMoves = 0;
-                }
+
+            }
+            if (gameBoard.queensAlone()) {
+                queenMoves += 1;
             }
             if(queenMoves == MAX_QUEEN_MOVES) {
                 isGameOver = true;
