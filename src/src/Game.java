@@ -17,7 +17,8 @@ public class Game {
         Color winner = null;
         Color playersTurn = Color.BLACK;
         int queenMoves = 0;
-        gameBoard.move(whitePlayer.moveRandomly().getKey());
+        gameBoard.move(whitePlayer.moveRandomly());
+        int moves = 1;
         while(!isGameOver) {
             gameBoard.printBoard();
             ArrayList<Pawn[][]> possibleMoves = gameBoard.allPossibleMoves(playersTurn);
@@ -41,6 +42,7 @@ public class Game {
                 }
 
             }
+            moves++;
             if (gameBoard.queensAlone()) {
                 queenMoves += 1;
             }
@@ -57,6 +59,7 @@ public class Game {
                 case BLACK -> System.out.println("Black player has won!");
             }
         }
+        System.out.println("Game has ended in " + moves + " moves");
     }
     private boolean checkIfMoveIsPossible(Pawn[][] playersMove, ArrayList<Pawn[][]> possibleMoves) {
         for(Pawn[][] move : possibleMoves) {

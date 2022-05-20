@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Random;
 
 
-public class AiPlayer implements CheckersPlayer {
+public class AiPlayer2 implements CheckersPlayer {
     private Board gameBoard;
     //private Game game;
     private Color color;
     public final int DEPTH = 7;
     @Override
     public Pawn[][] move() {
+        System.out.println(minimaxAlphaBeta(gameBoard, DEPTH, color, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY).getValue());
         return minimaxAlphaBeta(gameBoard, DEPTH, color, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY).getKey();
     }
     @Override
@@ -24,11 +25,11 @@ public class AiPlayer implements CheckersPlayer {
         return gameBoard.countElements(gameBoard.getBoard(), color) - gameBoard.countElements(gameBoard.getBoard(), enemyColor);
     }*/
 
-    private double evaluateBoard(Board gameBoard) {
+    /*private double evaluateBoard(Board gameBoard) {
         Color enemyColor = color == Color.WHITE ? Color.BLACK : Color.WHITE;
         return gameBoard.countElements(gameBoard.getBoard(), color) - gameBoard.countElements(gameBoard.getBoard(), enemyColor) +
                 2.0 * (gameBoard.countQueens(color) - gameBoard.countQueens(enemyColor));
-    }
+    }*/
 
     /*private double evaluateBoard(Board gameBoard) {
         Color enemyColor = color == Color.WHITE ? Color.BLACK : Color.WHITE;
@@ -37,7 +38,7 @@ public class AiPlayer implements CheckersPlayer {
         return pawnsInZonesPlr[0] + pawnsInZonesPlr[1] * 2.0 + pawnsInZonesPlr[2] * 4.0 - pawnsInZonesEnm[0] - pawnsInZonesEnm[1] * 2.0 - pawnsInZonesEnm[2] * 4.0;
     }*/
 
-    /*private double evaluateBoard(Board gameBoard) {
+    private double evaluateBoard(Board gameBoard) {
         ArrayList<Pawn[][]> playerPossibleMoves = gameBoard.allPossibleMoves(color);
         if (playerPossibleMoves.isEmpty()) {
             return Double.NEGATIVE_INFINITY;
@@ -57,65 +58,6 @@ public class AiPlayer implements CheckersPlayer {
         evaluation = gameBoard.countElements(gameBoard.getBoard(), color) - gameBoard.countElements(gameBoard.getBoard(), enemyColor) +
                 1.5 * (gameBoard.countQueens(color) - gameBoard.countQueens(enemyColor));
         return evaluation;
-    }*/
-
-    private int [] numberOfPawnsInZonesByPT(Pawn pawnType) {
-        int numOfPawns = 0;
-        int[] numOfPawnsByZone = {0, 0, 0};
-        Color plrColor = pawnType == Pawn.WHITE || pawnType == Pawn.WHITE_QUEEN ? Color.WHITE : Color.BLACK;
-        if (plrColor == Color.BLACK) {
-            for (int x = 0; x < 3; x++) {
-                for (int y = 0; y < gameBoard.getBoard()[0].length; y++) {
-                    if (gameBoard.getBoard()[x][y] == pawnType) {
-                        numOfPawnsByZone[0] = numOfPawnsByZone[0] + 1;
-                    }
-                }
-            }
-            for (int x = 3; x < 6; x++) {
-                for (int y = 0; y < gameBoard.getBoard()[0].length; y++) {
-                    if (gameBoard.getBoard()[x][y] == pawnType) {
-                        numOfPawnsByZone[1] = numOfPawnsByZone[1] + 1;
-                    }
-                }
-            }
-            for (int x = 6; x < 8; x++) {
-                for (int y = 0; y < gameBoard.getBoard()[0].length; y++) {
-                    if (gameBoard.getBoard()[x][y] == pawnType) {
-                        numOfPawnsByZone[2] = numOfPawnsByZone[2] + 1;
-                    }
-                }
-                if (color == Color.WHITE) {
-                    int[] revArray = new int[3];
-                    revArray[0] = numOfPawnsByZone[2];
-                    revArray[1] = numOfPawnsByZone[1];
-                    revArray[2] = numOfPawnsByZone[0];
-                    return revArray;
-                }
-            }
-        } else {
-            for (int x = 7; x > 4; x--) {
-                for (int y = 0; y < gameBoard.getBoard()[0].length; y++) {
-                    if (gameBoard.getBoard()[x][y] == pawnType) {
-                        numOfPawnsByZone[0] = numOfPawnsByZone[0] + 1;
-                    }
-                }
-            }
-            for (int x = 4; x > 1; x--) {
-                for (int y = 0; y < gameBoard.getBoard()[0].length; y++) {
-                    if (gameBoard.getBoard()[x][y] == pawnType) {
-                        numOfPawnsByZone[1] = numOfPawnsByZone[1] + 1;
-                    }
-                }
-            }
-            for (int x = 1; x >= 0; x--) {
-                for (int y = 0; y < gameBoard.getBoard()[0].length; y++) {
-                    if (gameBoard.getBoard()[x][y] == pawnType) {
-                        numOfPawnsByZone[2] = numOfPawnsByZone[2] + 1;
-                    }
-                }
-            }
-        }
-        return numOfPawnsByZone;
     }
 
     private int [] numberOfPawnsInZones(Color color) {
@@ -182,7 +124,66 @@ public class AiPlayer implements CheckersPlayer {
         return numOfPawnsByZone;
     }
 
-    public AiPlayer(Board board, Color color) {
+    private int [] numberOfPawnsInZonesByPT(Pawn pawnType) {
+        int numOfPawns = 0;
+        int[] numOfPawnsByZone = {0, 0, 0};
+        Color plrColor = pawnType == Pawn.WHITE || pawnType == Pawn.WHITE_QUEEN ? Color.WHITE : Color.BLACK;
+        if (plrColor == Color.BLACK) {
+            for (int x = 0; x < 3; x++) {
+                for (int y = 0; y < gameBoard.getBoard()[0].length; y++) {
+                    if (gameBoard.getBoard()[x][y] == pawnType) {
+                        numOfPawnsByZone[0] = numOfPawnsByZone[0] + 1;
+                    }
+                }
+            }
+            for (int x = 3; x < 6; x++) {
+                for (int y = 0; y < gameBoard.getBoard()[0].length; y++) {
+                    if (gameBoard.getBoard()[x][y] == pawnType) {
+                        numOfPawnsByZone[1] = numOfPawnsByZone[1] + 1;
+                    }
+                }
+            }
+            for (int x = 6; x < 8; x++) {
+                for (int y = 0; y < gameBoard.getBoard()[0].length; y++) {
+                    if (gameBoard.getBoard()[x][y] == pawnType) {
+                        numOfPawnsByZone[2] = numOfPawnsByZone[2] + 1;
+                    }
+                }
+                if (color == Color.WHITE) {
+                    int[] revArray = new int[3];
+                    revArray[0] = numOfPawnsByZone[2];
+                    revArray[1] = numOfPawnsByZone[1];
+                    revArray[2] = numOfPawnsByZone[0];
+                    return revArray;
+                }
+            }
+        } else {
+            for (int x = 7; x > 4; x--) {
+                for (int y = 0; y < gameBoard.getBoard()[0].length; y++) {
+                    if (gameBoard.getBoard()[x][y] == pawnType) {
+                        numOfPawnsByZone[0] = numOfPawnsByZone[0] + 1;
+                    }
+                }
+            }
+            for (int x = 4; x > 1; x--) {
+                for (int y = 0; y < gameBoard.getBoard()[0].length; y++) {
+                    if (gameBoard.getBoard()[x][y] == pawnType) {
+                        numOfPawnsByZone[1] = numOfPawnsByZone[1] + 1;
+                    }
+                }
+            }
+            for (int x = 1; x >= 0; x--) {
+                for (int y = 0; y < gameBoard.getBoard()[0].length; y++) {
+                    if (gameBoard.getBoard()[x][y] == pawnType) {
+                        numOfPawnsByZone[2] = numOfPawnsByZone[2] + 1;
+                    }
+                }
+            }
+        }
+        return numOfPawnsByZone;
+    }
+
+    public AiPlayer2(Board board, Color color) {
         gameBoard = board;
         this.color = color;
     }
