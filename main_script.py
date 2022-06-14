@@ -1,5 +1,5 @@
 from copy import deepcopy
-from sklearn.metrics import f1_score, precision_score
+from sklearn.metrics import classification_report, f1_score, precision_score
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB, ComplementNB
 from sklearn import svm
@@ -80,7 +80,7 @@ train_n_validate_ds = cleansed_data[0:int(len(cleansed_data) * 0.9)]
 test_ds = cleansed_data[int(len(cleansed_data) * 0.9):]
 train_n_validate_ds_x = train_n_validate_ds[:,1]
 vectorizer = TfidfVectorizer(stop_words='english', max_features=3000, decode_error='ignore')
-vectorizer.fit(train_n_validate_ds_x)
+vectorizer.fit(cleansed_data[:,1])
 train_n_validate_ds_y = train_n_validate_ds[:,0]
 test_ds_x = test_ds[:,1]
 test_ds_y = test_ds[:,0]
@@ -88,35 +88,35 @@ test_ds_y = test_ds[:,0]
 train_n_validate_ds_x_chunks = np.array_split(train_n_validate_ds_x, 10)
 train_n_validate_ds_y_chunks = np.array_split(train_n_validate_ds_y, 10)
 
-nb_engine1 = GaussianNB()
-print('Gausian Naive Bayes results: ')
-nb_eng_1_res = f1score_mathched_elems(nb_engine1, vectorizer, train_n_validate_ds_x_chunks, train_n_validate_ds_y_chunks)
-print(nb_eng_1_res)
+# nb_engine1 = GaussianNB()
+# print('Gausian Naive Bayes results: ')
+# nb_eng_1_res = f1score_mathched_elems(nb_engine1, vectorizer, train_n_validate_ds_x_chunks, train_n_validate_ds_y_chunks)
+# print(nb_eng_1_res)
 
-nb_engine2 = MultinomialNB()
-print('Multinomial Naive Bayes results: ')
-nb_eng_2_res = f1score_mathched_elems(nb_engine2, vectorizer, train_n_validate_ds_x_chunks, train_n_validate_ds_y_chunks)
-print(nb_eng_2_res)
+# nb_engine2 = MultinomialNB()
+# print('Multinomial Naive Bayes results: ')
+# nb_eng_2_res = f1score_mathched_elems(nb_engine2, vectorizer, train_n_validate_ds_x_chunks, train_n_validate_ds_y_chunks)
+# print(nb_eng_2_res)
 
-nb_engine3 = BernoulliNB()
-print('Bernoulli Naive Bayes results: ')
-nb_eng_3_res = f1score_mathched_elems(nb_engine3, vectorizer, train_n_validate_ds_x_chunks, train_n_validate_ds_y_chunks)
-print(nb_eng_3_res)
+# nb_engine3 = BernoulliNB()
+# print('Bernoulli Naive Bayes results: ')
+# nb_eng_3_res = f1score_mathched_elems(nb_engine3, vectorizer, train_n_validate_ds_x_chunks, train_n_validate_ds_y_chunks)
+# print(nb_eng_3_res)
 
-nb_engine4 = ComplementNB()
-print('Complement Naive Bayes results: ')
-nb_eng_4_res = f1score_mathched_elems(nb_engine4, vectorizer, train_n_validate_ds_x_chunks, train_n_validate_ds_y_chunks)
-print(nb_eng_4_res)
+# nb_engine4 = ComplementNB()
+# print('Complement Naive Bayes results: ')
+# nb_eng_4_res = f1score_mathched_elems(nb_engine4, vectorizer, train_n_validate_ds_x_chunks, train_n_validate_ds_y_chunks)
+# print(nb_eng_4_res)
 
-best_nb_engine = None
-if nb_eng_1_res[0] + nb_eng_1_res[1] * 1.25 > nb_eng_2_res[0] + nb_eng_2_res[1] * 1.25 and nb_eng_1_res[0] + nb_eng_1_res[1] * 1.25 > nb_eng_3_res[0] + nb_eng_3_res[1] * 1.25 and nb_eng_1_res[0] + nb_eng_1_res[1] * 1.25 > nb_eng_4_res[0] + nb_eng_4_res[1] * 1.25:
-    best_nb_engine = nb_engine1
-elif nb_eng_2_res[0] + nb_eng_2_res[1] * 1.25 > nb_eng_1_res[0] + nb_eng_1_res[1] * 1.25 and nb_eng_2_res[0] + nb_eng_2_res[1] * 1.25 > nb_eng_3_res[0] + nb_eng_3_res[1] * 1.25 and nb_eng_2_res[0] + nb_eng_2_res[1] * 1.25 > nb_eng_4_res[0] + nb_eng_4_res[1] * 1.25:
-    best_nb_engine = nb_engine2
-elif nb_eng_3_res[0] + nb_eng_3_res[1] * 1.25 > nb_eng_1_res[0] + nb_eng_1_res[1] * 1.25 and nb_eng_3_res[0] + nb_eng_3_res[1] * 1.25 > nb_eng_2_res[0] + nb_eng_2_res[1] * 1.25 and nb_eng_3_res[0] + nb_eng_3_res[1] * 1.25 > nb_eng_4_res[0] + nb_eng_4_res[1] * 1.25:
-    best_nb_engine = nb_engine3
-else:
-    best_nb_engine = nb_engine4
+# best_nb_engine = None
+# if nb_eng_1_res[0] + nb_eng_1_res[1] * 1.25 > nb_eng_2_res[0] + nb_eng_2_res[1] * 1.25 and nb_eng_1_res[0] + nb_eng_1_res[1] * 1.25 > nb_eng_3_res[0] + nb_eng_3_res[1] * 1.25 and nb_eng_1_res[0] + nb_eng_1_res[1] * 1.25 > nb_eng_4_res[0] + nb_eng_4_res[1] * 1.25:
+#     best_nb_engine = nb_engine1
+# elif nb_eng_2_res[0] + nb_eng_2_res[1] * 1.25 > nb_eng_1_res[0] + nb_eng_1_res[1] * 1.25 and nb_eng_2_res[0] + nb_eng_2_res[1] * 1.25 > nb_eng_3_res[0] + nb_eng_3_res[1] * 1.25 and nb_eng_2_res[0] + nb_eng_2_res[1] * 1.25 > nb_eng_4_res[0] + nb_eng_4_res[1] * 1.25:
+#     best_nb_engine = nb_engine2
+# elif nb_eng_3_res[0] + nb_eng_3_res[1] * 1.25 > nb_eng_1_res[0] + nb_eng_1_res[1] * 1.25 and nb_eng_3_res[0] + nb_eng_3_res[1] * 1.25 > nb_eng_2_res[0] + nb_eng_2_res[1] * 1.25 and nb_eng_3_res[0] + nb_eng_3_res[1] * 1.25 > nb_eng_4_res[0] + nb_eng_4_res[1] * 1.25:
+#     best_nb_engine = nb_engine3
+# else:
+#     best_nb_engine = nb_engine4
 
 svm_engines = [svm.SVC(C=1.25, cache_size=325.0), svm.SVC(kernel='poly',degree=4, shrinking=False), svm.SVC(kernel='sigmoid', coef0=2.25)]
 
@@ -124,18 +124,19 @@ max_score = -1.0
 best_svm_engine = svm_engines[0]
 for engine in svm_engines:
     ret_tuple = f1score_mathched_elems(engine, vectorizer, train_n_validate_ds_x_chunks, train_n_validate_ds_y_chunks)
+    print(ret_tuple)
     if ret_tuple[0] + ret_tuple[1] * 1.25 > max_score:
         max_score = ret_tuple[0] + ret_tuple[1] * 1.25
         best_nb_engine = engine
 
-best_nb_engine_score = f1score_mathched_elems(best_nb_engine, vectorizer, train_n_validate_ds_x_chunks, train_n_validate_ds_y_chunks)[0] + f1score_mathched_elems(best_nb_engine, vectorizer, train_n_validate_ds_x_chunks, train_n_validate_ds_y_chunks)[1] * 1.25
+#best_nb_engine_score = f1score_mathched_elems(best_nb_engine, vectorizer, train_n_validate_ds_x_chunks, train_n_validate_ds_y_chunks)[0] + f1score_mathched_elems(best_nb_engine, vectorizer, train_n_validate_ds_x_chunks, train_n_validate_ds_y_chunks)[1] * 1.25
 best_svm_engine_score = max_score
-best_engine = None
-if best_nb_engine_score > best_svm_engine_score:
-    best_engine = best_nb_engine
-else:
-    best_engine = best_svm_engine
+best_engine = best_svm_engine
+# if best_nb_engine_score > best_svm_engine_score:
+#     best_engine = best_nb_engine
+# else:
+#     best_engine = best_svm_engine
 
 print('Predictions for the best classification engine')
-y_pred = best_engine.predict(test_ds_x)
-print()
+y_pred = best_engine.predict(vectorizer.transform(test_ds_x))
+print(classification_report(test_ds_y, y_pred))
