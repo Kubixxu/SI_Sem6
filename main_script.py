@@ -138,5 +138,5 @@ best_engine = best_svm_engine
 #     best_engine = best_svm_engine
 
 print('Predictions for the best classification engine')
-y_pred = best_engine.predict(vectorizer.transform(test_ds_x))
+y_pred = best_engine.predict(vectorizer.transform(test_ds_x).toarray())
 print(classification_report(test_ds_y, y_pred))
