@@ -2,6 +2,7 @@ from copy import deepcopy
 from sklearn.metrics import f1_score, precision_score
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB, ComplementNB
+from sklearn import svm
 import numpy as np
 import pandas
 import json
@@ -116,3 +117,25 @@ elif nb_eng_3_res[0] + nb_eng_3_res[1] * 1.25 > nb_eng_1_res[0] + nb_eng_1_res[1
     best_nb_engine = nb_engine3
 else:
     best_nb_engine = nb_engine4
+
+svm_engines = [svm.SVC(C=1.25, cache_size=325.0), svm.SVC(kernel='poly',degree=4, shrinking=False), svm.SVC(kernel='sigmoid', coef0=2.25)]
+
+max_score = -1.0
+best_svm_engine = svm_engines[0]
+for engine in svm_engines:
+    ret_tuple = f1score_mathched_elems(engine, vectorizer, train_n_validate_ds_x_chunks, train_n_validate_ds_y_chunks)
+    if ret_tuple[0] + ret_tuple[1] * 1.25 > max_score:
+        max_score = ret_tuple[0] + ret_tuple[1] * 1.25
+        best_nb_engine = engine
+
+best_nb_engine_score = f1score_mathched_elems(best_nb_engine, vectorizer, train_n_validate_ds_x_chunks, train_n_validate_ds_y_chunks)[0] + f1score_mathched_elems(best_nb_engine, vectorizer, train_n_validate_ds_x_chunks, train_n_validate_ds_y_chunks)[1] * 1.25
+best_svm_engine_score = max_score
+best_engine = None
+if best_nb_engine_score > best_svm_engine_score:
+    best_engine = best_nb_engine
+else:
+    best_engine = best_svm_engine
+
+print('Predictions for the best classification engine')
+y_pred = best_engine.predict(test_ds_x)
+print()
